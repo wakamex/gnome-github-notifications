@@ -1,4 +1,4 @@
-const { St, Gio, Gtk, Soup, Clutter } = imports.gi;
+const { St, Gio, GLib, Gtk, Soup, Clutter } = imports.gi;
 const Main = imports.ui.main;
 const Mainloop = imports.mainloop;
 
@@ -19,6 +19,7 @@ function error(message) {
 
 class GithubNotifications {
     constructor() {
+        this.authAuri = null;
         this.token = '';
         this.handle = '';
         this.hideWidget = false;
@@ -155,9 +156,17 @@ class GithubNotifications {
         if (this.showParticipatingOnly) {
             url = 'https://api.' + this.domain + '/notifications?participating=1';
         }
-        this.authUri = new Soup.URI(url);
-        this.authUri.set_user(this.handle);
-        this.authUri.set_password(this.token);
+        this.authUri = GLib.build_with_user(
+            flags=GLib.UriFlags.NONE,
+            scheme='https',
+            user=this.handle,
+            password=this.token,
+            auth_params=null,
+            host='api.' + this.domain,
+            path= '/notifications',
+            query=null,
+            fragment=null
+        )
 
         if (this.httpSession) {
             this.httpSession.abort();
