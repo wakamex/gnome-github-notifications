@@ -156,16 +156,17 @@ class GithubNotifications {
         if (this.showParticipatingOnly) {
             url = 'https://api.' + this.domain + '/notifications?participating=1';
         }
-        this.authUri = GLib.build_with_user(
-            flags=GLib.UriFlags.NONE,
-            scheme='https',
-            user=this.handle,
-            password=this.token,
-            auth_params=null,
-            host='api.' + this.domain,
-            path= '/notifications',
-            query=null,
-            fragment=null
+        this.authUri = GLib.Uri.build_with_user(
+            GLib.UriFlags.NONE,
+            'https',
+            this.handle,
+            this.token,
+            null,
+            'api.' + this.domain,
+            -1,
+            '/notifications',
+            null,
+            null
         )
 
         if (this.httpSession) {
